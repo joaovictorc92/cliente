@@ -22,6 +22,7 @@ public class Cliente implements Serializable{
 			usuario = (Usuario) input.readObject();
 			System.out.println("Nome: "+usuario.getNome()+" Senha: "+usuario.getSenha());
 			
+			
 		} catch(Exception e){
 			e.printStackTrace();
 			
