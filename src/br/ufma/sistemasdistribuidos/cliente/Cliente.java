@@ -1,33 +1,32 @@
 package br.ufma.sistemasdistribuidos.cliente;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
-import br.ufma.sistemasdistribuidos.form.Usuario;
+import br.ufma.sistemasdistribuidos.apresentacao.Login;
 
 public class Cliente implements Serializable{
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
+    String url;
+    int porta;
+    Socket cliente;
+	public Cliente(String url, int porta){
+		this.url = url;
+		this.porta = porta;
 		try {
-			Socket cliente = new Socket("192.168.0.103",54321);
-			ObjectInputStream input = new ObjectInputStream(cliente.getInputStream());
-			Usuario usuario = new Usuario();
-			usuario = (Usuario) input.readObject();
-			System.out.println("Nome: "+usuario.getNome()+" Senha: "+usuario.getSenha());
-			
-			
-		} catch(Exception e){
+			this.cliente = new Socket(url,porta);
+			Login login = new Login(cliente);
+			login.setVisible(true);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
 		}
 		
+		
+	}
+	
+	public static void main(String[] args) {
+		
+		new Cliente("127.0.0.1",12345);
 
 	}
 
