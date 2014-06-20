@@ -3,7 +3,10 @@ package br.ufma.sistemasdistribuidos.apresentacao;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import javax.swing.JButton;
@@ -24,9 +27,38 @@ public class Login extends JFrame {
 	private JPanel contentPane;
 	private JTextField textField;
 	private JPasswordField passwordField;
+	private int idconexao;
+	private boolean conectado;
 
-	public Login(final Socket cliente) throws IOException {
+	public boolean isConectado() {
+		return conectado;
+	}
+
+	public void setConectado(boolean conectado) {
+		this.conectado = conectado;
+	}
+	
+	public void limpaLogin(){
+		textField.setText("");
+		passwordField.setText("");
+	}
+
+	public Login(final ObjectOutputStream output) throws IOException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent ev){
+				setConectado(false);
+				Mensagem mensagem = new Mensagem(); //= (Mensagem) usuario;
+				mensagem.setTipo(0);
+			    try {
+					Serializacao.serializa(output, mensagem);
+			    	output.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				
+			}
+		});
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -67,11 +99,8 @@ public class Login extends JFrame {
 					Mensagem mensagem = new Mensagem(); //= (Mensagem) usuario;
 				    mensagem.setObject(usuario);
 					mensagem.setTipo(1);
-				    try {
-						Serializacao.serializa(cliente.getOutputStream(), mensagem);
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
+					Serializacao.serializa(output, mensagem);
+					
 			    }
 		}
 		});
@@ -89,10 +118,21 @@ public class Login extends JFrame {
 		panel.add(btnNewButton);
 		
 		
+		
 	}
 	
 	public void chamaTelaCadastro(){
 		Cadastro cadastro = new Cadastro(this);
 		cadastro.setVisible(true);
 	}
+
+	public int getIdconexao() {
+		return idconexao;
+	}
+
+	public void setIdconexao(int idconexao) {
+		this.idconexao = idconexao;
+	}
+	
+	
 }
