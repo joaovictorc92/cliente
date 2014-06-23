@@ -1,15 +1,14 @@
 package br.ufma.sistemasdistribuidos.apresentacao;
 
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
@@ -22,6 +21,7 @@ import javax.swing.JTextArea;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
 
+import br.ufma.sistemasdistribuidos.form.Apresentacao;
 import br.ufma.sistemasdistribuidos.form.IUsuario;
 import br.ufma.sistemasdistribuidos.form.Mensagem;
 import br.ufma.sistemasdistribuidos.servidor.Serializacao;
@@ -32,7 +32,19 @@ public class Sistema extends JFrame {
 	JTextArea textArea;
 	private ArrayList<IUsuario> usuariosLogados;
 	Login login;
-    
+	JComboBox comboBox;
+	
+	public void carregarListaApresentacoesDisponiveis(ArrayList<Apresentacao> listaApresentacoes){
+		String[] opcoes = new String[listaApresentacoes.size()+1];
+		opcoes[0] = "";
+		int i=1;
+		for(Apresentacao apresentacao: listaApresentacoes){
+			opcoes[i]= apresentacao.getNome();
+			i++;
+		}
+		comboBox.setModel(new DefaultComboBoxModel(opcoes));
+	}
+	
 	public void setUsuariosLogados(String texto){
 		textArea.setText(texto);
 	}
@@ -52,43 +64,49 @@ public class Sistema extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		
+
 		JLabel lblSistemaDeApresentaes = new JLabel("              Sistema de Apresenta\u00E7\u00F5es");
 		lblSistemaDeApresentaes.setFont(new Font("Times New Roman", Font.BOLD, 18));
-		
-		JComboBox comboBox = new JComboBox();
-		
+
+	    comboBox = new JComboBox(new DefaultComboBoxModel());
 		JLabel lblNewLabel = new JLabel("Apresenta\u00E7\u00F5es Dispon\u00EDveis");
 		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 12));
-		
+
 		JLabel lblApresentaesEmAndamento = new JLabel("Apresenta\u00E7\u00F5es em andamento");
 		lblApresentaesEmAndamento.setFont(new Font("Times New Roman", Font.BOLD, 12));
-		
+
 		JComboBox comboBox_1 = new JComboBox();
 		
 		JButton btnNewButton = new JButton("Carregar");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				if(comboBox.getSelectedIndex()>0){
+					Mensagem mensagem = new Mensagem();
+					mensagem.setTipo(8);
+					mensagem.setObject(comboBox.getSelectedIndex());
+					Serializacao.serializa(output, mensagem);
+				}
 			}
 		});
-		
+
 		JButton btnNewButton_1 = new JButton("Entrar");
-		
+
 		JScrollPane scrollPane = new JScrollPane();
-		
+
 		JScrollPane scrollPane_1 = new JScrollPane();
-		
+
 		JScrollPane scrollPane_2 = new JScrollPane();
-		
+
 		JLabel lblNewLabel_1 = new JLabel("      Usu\u00E1rios Logados");
 		lblNewLabel_1.setFont(new Font("Times New Roman", Font.BOLD, 12));
-		
+
 		JButton btnSair = new JButton("Sair");
 		btnSair.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Mensagem mensagem = new Mensagem();
 				mensagem.setTipo(5);
 				Serializacao.serializa(output, mensagem);
+			
 			}
 		});
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
@@ -161,7 +179,7 @@ public class Sistema extends JFrame {
 							.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
 		);
-		
+
 		textArea = new JTextArea();
 		scrollPane_2.setViewportView(textArea);
 		contentPane.setLayout(gl_contentPane);

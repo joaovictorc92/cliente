@@ -44,18 +44,15 @@ public class Login extends JFrame {
 	}
 
 	public Login(final ObjectOutputStream output) throws IOException {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev){
 				setConectado(false);
 				Mensagem mensagem = new Mensagem(); //= (Mensagem) usuario;
 				mensagem.setTipo(0);
-			    try {
-					Serializacao.serializa(output, mensagem);
-			    	output.close();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+			    
+					Serializacao.serializa(output, mensagem);// Envia mensagem de encerramento de execução do cliente
+				
 				
 			}
 		});

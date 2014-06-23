@@ -18,13 +18,13 @@ public class Cliente implements Serializable{
 		this.porta = porta;
 		try {
 			this.cliente = new Socket(url,porta);
-			ObjectOutputStream output = new ObjectOutputStream(cliente.getOutputStream());
-			ObjectInputStream input =  new ObjectInputStream(cliente.getInputStream());
-			Login login = new Login(output);
+			ObjectOutputStream output = new ObjectOutputStream(cliente.getOutputStream()); // Cria fluxo de saida para serializar objetos
+			ObjectInputStream input =  new ObjectInputStream(cliente.getInputStream());// Cria fluxo de entrada para deserializar objetos
+			Login login = new Login(output); // Cria a janela de login
 			login.setVisible(true);
 			login.setConectado(true);
 			Sistema sistema = new Sistema(login,output);
-			Recebedor r = new Recebedor(input, login,sistema);
+			Recebedor r = new Recebedor(input, login,sistema); // Cria thread para escutar o servidor enquanto
 			new Thread(r).start();
 			//cliente.close();
 		} catch (Exception e) {
