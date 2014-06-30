@@ -7,12 +7,12 @@ import java.net.Socket;
 
 import br.ufma.sistemasdistribuidos.apresentacao.Login;
 import br.ufma.sistemasdistribuidos.apresentacao.Sistema;
+import br.ufma.sistemasdistribuidos.apresentacao.Slide;
 
 public class Cliente implements Serializable{
     String url;
     int porta;
     Socket cliente;
-    int idConeccao;
 	public Cliente(String url, int porta){
 		this.url = url;
 		this.porta = porta;
@@ -24,7 +24,7 @@ public class Cliente implements Serializable{
 			login.setVisible(true);
 			login.setConectado(true);
 			Sistema sistema = new Sistema(login,output);
-			Recebedor r = new Recebedor(input, login,sistema); // Cria thread para escutar o servidor enquanto
+			Recebedor r = new Recebedor(input,output, login,sistema); // Cria thread para escutar o servidor enquanto
 			new Thread(r).start();
 			//cliente.close();
 		} catch (Exception e) {

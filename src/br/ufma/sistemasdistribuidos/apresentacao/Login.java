@@ -47,12 +47,11 @@ public class Login extends JFrame {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev){
-				setConectado(false);
+				conectado = false;
+				disable();
 				Mensagem mensagem = new Mensagem(); //= (Mensagem) usuario;
 				mensagem.setTipo(0);
-			    
-					Serializacao.serializa(output, mensagem);// Envia mensagem de encerramento de execução do cliente
-				
+			    Serializacao.serializa(output, mensagem);// Envia mensagem de encerramento de execução do cliente
 				
 			}
 		});
@@ -104,24 +103,11 @@ public class Login extends JFrame {
 		btnEntrar.setBounds(20, 215, 98, 23);
 		panel.add(btnEntrar);
 		
-		JButton btnNewButton = new JButton("Cadastrar");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				setVisible(false);
-				chamaTelaCadastro();
-			}
-		});
-		btnNewButton.setBounds(135, 215, 98, 23);
-		panel.add(btnNewButton);
-		
 		
 		
 	}
 	
-	public void chamaTelaCadastro(){
-		Cadastro cadastro = new Cadastro(this);
-		cadastro.setVisible(true);
-	}
+	
 
 	public int getIdconexao() {
 		return idconexao;

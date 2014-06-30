@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -22,6 +23,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
 
 import br.ufma.sistemasdistribuidos.form.Apresentacao;
+import br.ufma.sistemasdistribuidos.form.IApresentacao;
 import br.ufma.sistemasdistribuidos.form.IUsuario;
 import br.ufma.sistemasdistribuidos.form.Mensagem;
 import br.ufma.sistemasdistribuidos.servidor.Serializacao;
@@ -33,16 +35,40 @@ public class Sistema extends JFrame {
 	private ArrayList<IUsuario> usuariosLogados;
 	Login login;
 	JComboBox comboBox;
+	JComboBox comboBox_1;
+	IUsuario usuario;
 	
+	public IUsuario getUsuario() {
+		return usuario;
+	}
+	public void setUsuario(IUsuario usuario) {
+		this.usuario = usuario;
+	}
 	public void carregarListaApresentacoesDisponiveis(ArrayList<Apresentacao> listaApresentacoes){
 		String[] opcoes = new String[listaApresentacoes.size()+1];
 		opcoes[0] = "";
 		int i=1;
-		for(Apresentacao apresentacao: listaApresentacoes){
+		for(IApresentacao apresentacao: listaApresentacoes){
 			opcoes[i]= apresentacao.getNome();
 			i++;
 		}
 		comboBox.setModel(new DefaultComboBoxModel(opcoes));
+	}
+	public void carregarListaApresentacoesAndamento(ArrayList<Apresentacao> listaApresentacoesAndamento){
+		System.out.println("Tamanho da apresentação:"+listaApresentacoesAndamento.size());
+		if(listaApresentacoesAndamento.size()>0){
+			String[] opcoes = new String[listaApresentacoesAndamento.size()+1];
+			opcoes[0] = "";
+			int i=1;
+			for(IApresentacao apresentacao: listaApresentacoesAndamento){
+				opcoes[i]= apresentacao.getNome();
+				i++;
+			}
+			comboBox_1.setModel(new DefaultComboBoxModel(opcoes));
+		}
+		else{
+			comboBox_1.setModel(new DefaultComboBoxModel());
+		}
 	}
 	
 	public void setUsuariosLogados(String texto){
@@ -50,6 +76,7 @@ public class Sistema extends JFrame {
 	}
 
 	public Sistema(final Login login,final ObjectOutputStream output) {
+		this.usuario = usuario;
 		this.login = login;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
@@ -75,7 +102,7 @@ public class Sistema extends JFrame {
 		JLabel lblApresentaesEmAndamento = new JLabel("Apresenta\u00E7\u00F5es em andamento");
 		lblApresentaesEmAndamento.setFont(new Font("Times New Roman", Font.BOLD, 12));
 
-		JComboBox comboBox_1 = new JComboBox();
+		comboBox_1 = new JComboBox();
 		
 		JButton btnNewButton = new JButton("Carregar");
 		btnNewButton.addActionListener(new ActionListener() {
@@ -83,13 +110,25 @@ public class Sistema extends JFrame {
 				if(comboBox.getSelectedIndex()>0){
 					Mensagem mensagem = new Mensagem();
 					mensagem.setTipo(8);
-					mensagem.setObject(comboBox.getSelectedIndex());
+					mensagem.setObject(usuario);
+					mensagem.setIdApresentacao(comboBox.getSelectedIndex());
 					Serializacao.serializa(output, mensagem);
 				}
 			}
 		});
 
 		JButton btnNewButton_1 = new JButton("Entrar");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(comboBox_1.getSelectedIndex()>0){
+					Mensagem mensagem = new Mensagem();
+					mensagem.setTipo(14);
+					mensagem.setObject(usuario);
+					mensagem.setIdApresentacao(comboBox_1.getSelectedIndex());
+					Serializacao.serializa(output, mensagem);
+				}
+			}
+		});
 
 		JScrollPane scrollPane = new JScrollPane();
 
@@ -181,6 +220,7 @@ public class Sistema extends JFrame {
 		);
 
 		textArea = new JTextArea();
+		textArea.setEnabled(false);
 		scrollPane_2.setViewportView(textArea);
 		contentPane.setLayout(gl_contentPane);
 	}
