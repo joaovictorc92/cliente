@@ -27,7 +27,9 @@ import br.ufma.sistemasdistribuidos.form.IApresentacao;
 import br.ufma.sistemasdistribuidos.form.IUsuario;
 import br.ufma.sistemasdistribuidos.form.Mensagem;
 import br.ufma.sistemasdistribuidos.servidor.Serializacao;
-
+/*
+ * Janela do sistema
+ */
 public class Sistema extends JFrame {
 
 	private JPanel contentPane;

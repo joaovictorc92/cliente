@@ -18,7 +18,9 @@ import br.ufma.sistemasdistribuidos.form.IUsuario;
 import br.ufma.sistemasdistribuidos.form.Mensagem;
 import br.ufma.sistemasdistribuidos.form.Usuario;
 import br.ufma.sistemasdistribuidos.servidor.Serializacao;
-
+/*
+ * Classe para ouvir o servidor
+ */
 public class Recebedor implements Runnable {
 	ObjectInputStream input;
 	ObjectOutputStream output;
@@ -96,34 +98,35 @@ public class Recebedor implements Runnable {
 				slide = new Slide(listaImagens, output);
 				slide.setIdApresentacao(mensagem.getIdApresentacao());
 				slide.setVisible(true);
-				t = new Thread(new ServidorCliente(slide, usuario.getPorta()));
+				t = new Thread(new ServidorCliente(slide, usuario.getPorta(),usuario)); // Abre a thread para escutar requisições de novos ouvintes
 				t.start();
 
 			}
-			if (mensagem.getTipo() == 10) {
+			if (mensagem.getTipo() == 10) { // Carrega lista de apresentações em andamento
 				listaApresentacoesAndamento = (ArrayList<Apresentacao>) mensagem
 						.getObject();
 				sistema.carregarListaApresentacoesAndamento(listaApresentacoesAndamento);
 
 			}
-			if (mensagem.getTipo() == 12) {
+			if (mensagem.getTipo() == 12) { //Atualiza Usuário
 				usuario = (IUsuario) mensagem.getObject();
 			}
-			if (mensagem.getTipo() == 15) {
+			if (mensagem.getTipo() == 15) { // Depois de se conectar com a apresentação em andamento, o cliente tenta se conectar com o palestrante
 				IUsuario palestrante;
 				palestrante = (IUsuario) mensagem.getObject();
 				try {
 					ClientePonto clientePonto = new ClientePonto(
-							palestrante.getIp(), palestrante.getPorta());
+							palestrante.getIp(), palestrante.getPorta(),usuario); // Chama a classe para ser ouvinte
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-			if(mensagem.getTipo()==16){
+			if(mensagem.getTipo()==16){ // Terminar apresentação por parte do palestrante
 				t.interrupt();
 			}
 
 		}
+		
 	}
 }

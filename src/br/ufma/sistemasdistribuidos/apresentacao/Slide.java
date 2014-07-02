@@ -1,6 +1,7 @@
 package br.ufma.sistemasdistribuidos.apresentacao;
 
 import java.awt.BorderLayout;
+import java.awt.Button;
 import java.awt.EventQueue;
 
 import javax.swing.ImageIcon;
@@ -19,7 +20,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-
+import java.awt.TextArea;
+import javax.swing.JComboBox;
+/*
+ * Janela do Palestrante
+ */
 public class Slide extends JFrame {
 
 	private JPanel contentPane;
@@ -30,6 +35,29 @@ public class Slide extends JFrame {
 	ImageIcon imagemCorrente;
 	ArrayList<ObjectOutputStream> listaOuvintes=null;
 	String label;
+	TextArea textArea;
+	String usuariosApresentacao;
+	JComboBox comboBox;
+	JButton btnNewButton,btnNewButton_1;
+	ArrayList<ImageIcon> listaImagens;
+	int modo;
+	
+	public int getModo() {
+		return modo;
+	}
+
+	public void setModo(int modo) {
+		this.modo = modo;
+	}
+
+	public String getUsuariosApresentacao() {
+		return usuariosApresentacao;
+	}
+
+	public void setUsuariosApresentacao(String usuariosApresentacao) {
+		this.usuariosApresentacao = usuariosApresentacao;
+		textArea.setText(usuariosApresentacao);
+	}
 
 	public String getLabel() {
 		return label;
@@ -45,6 +73,7 @@ public class Slide extends JFrame {
     
 	public Slide(final ArrayList<ImageIcon> listaImagens,
 			final ObjectOutputStream output) {
+		this.listaImagens = listaImagens;
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
@@ -52,14 +81,14 @@ public class Slide extends JFrame {
 				Mensagem mensagem = new Mensagem(); // = (Mensagem) usuario;
 				mensagem.setTipo(11);
 				mensagem.setIdApresentacao(idApresentacao);
+				Serializacao.serializa(output, mensagem);// Envia mensagem de encerramento de execução da apresentação
 				if(listaOuvintes!=null){
-					Serializacao.serializa(output, mensagem);// Envia mensagem de encerramento de execução da apresentação
 					mensagem.setTipo(18);
 					enviarParaOuvintes(mensagem);
 				}
 			}
 		});
-		setBounds(100, 100, 600, 573);
+		setBounds(100, 100, 643, 649);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -72,7 +101,7 @@ public class Slide extends JFrame {
 		lblNewLabel.setBounds(30, 25, 529, 447);
 		contentPane.add(lblNewLabel);
 
-		JButton btnNewButton = new JButton("Voltar");
+		btnNewButton = new JButton("Voltar");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (i > 0) {
@@ -91,10 +120,10 @@ public class Slide extends JFrame {
 				}
 			}
 		});
-		btnNewButton.setBounds(202, 481, 89, 42);
+		btnNewButton.setBounds(202, 481, 89, 23);
 		contentPane.add(btnNewButton);
 
-		JButton btnNewButton_1 = new JButton("Avançar");
+		btnNewButton_1 = new JButton("Avançar");
 		if (listaImagens.isEmpty()) {
 			btnNewButton.setEnabled(false);
 			btnNewButton_1.setEnabled(false);
@@ -117,12 +146,59 @@ public class Slide extends JFrame {
 				}
 			}
 		});
-		btnNewButton_1.setBounds(300, 481, 89, 42);
+		btnNewButton_1.setBounds(300, 481, 89, 23);
 		contentPane.add(btnNewButton_1);
-		String label = i + 1 + "/" + listaImagens.size();
+		label = i + 1 + "/" + listaImagens.size();
 		lblNewLabel_1 = new JLabel(label);
-		lblNewLabel_1.setBounds(508, 481, 46, 14);
+		lblNewLabel_1.setBounds(459, 483, 46, 14);
 		contentPane.add(lblNewLabel_1);
+		
+		textArea = new TextArea();
+		textArea.setBounds(10, 547, 162, 53);
+		contentPane.add(textArea);
+		
+		JLabel lblNewLabel_2 = new JLabel("Usu\u00E1rios assistindo");
+		lblNewLabel_2.setBounds(30, 515, 142, 26);
+		contentPane.add(lblNewLabel_2);
+		
+		String[] opcao = {"Apresentação","Discussão"};
+		comboBox = new JComboBox(opcao);
+		comboBox.setBounds(384, 547, 106, 20);
+		contentPane.add(comboBox);
+		
+		JLabel lblNewLabel_3 = new JLabel("Modo:");
+		lblNewLabel_3.setBounds(313, 547, 61, 20);
+		contentPane.add(lblNewLabel_3);
+		
+		JButton btnNewButton_2 = new JButton("Carregar");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(comboBox.getSelectedIndex()==0){//setar modo apresentação
+					modo=0;
+					btnNewButton.setEnabled(true);
+					btnNewButton_1.setEnabled(true);
+					if(listaOuvintes!=null){
+						Mensagem msg = new Mensagem();
+						msg.setTipo(23);
+						enviarParaOuvintes(msg);
+					}
+				}
+				else{ // setar modo discussão
+		            modo=1;
+					btnNewButton.setEnabled(false);
+					btnNewButton_1.setEnabled(false);
+					if(listaOuvintes!=null){
+						Mensagem msg = new Mensagem();
+						msg.setTipo(24);
+						msg.setIdApresentacao(listaImagens.size());
+						enviarParaOuvintes(msg);
+					}
+				}
+				
+			}
+		});
+		btnNewButton_2.setBounds(500, 547, 89, 23);
+		contentPane.add(btnNewButton_2);
 	}
 
 	public void enviarParaOuvintes(Mensagem msg){
@@ -153,5 +229,17 @@ public class Slide extends JFrame {
 
 	public void setIdApresentacao(int idApresentacao) {
 		this.idApresentacao = idApresentacao;
+	}
+	public void setSlideDiscussao(int idSlide){
+		imagemCorrente = listaImagens.get(idSlide);
+		lblNewLabel.setIcon(imagemCorrente);
+		if(listaOuvintes!=null){
+			Mensagem msg = new Mensagem();
+			msg.setTipo(17);
+			msg.setMensagemTexto(label);
+			msg.setObject(imagemCorrente);
+			enviarParaOuvintes(msg);
+		}
+		
 	}
 }

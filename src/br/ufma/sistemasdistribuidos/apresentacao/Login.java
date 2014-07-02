@@ -21,7 +21,9 @@ import br.ufma.sistemasdistribuidos.form.IUsuario;
 import br.ufma.sistemasdistribuidos.form.Mensagem;
 import br.ufma.sistemasdistribuidos.form.Usuario;
 import br.ufma.sistemasdistribuidos.servidor.Serializacao;
-
+/*
+ * Janela do Login
+ */
 public class Login extends JFrame {
 
 	private JPanel contentPane;
