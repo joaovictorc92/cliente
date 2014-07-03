@@ -5,11 +5,13 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
 
+import javax.swing.JOptionPane;
+
 import br.ufma.sistemasdistribuidos.apresentacao.Login;
 import br.ufma.sistemasdistribuidos.apresentacao.Sistema;
 import br.ufma.sistemasdistribuidos.apresentacao.Slide;
 
-public class Cliente implements Serializable{
+public class Cliente{
     String url;
     int porta;
     Socket cliente;
@@ -37,7 +39,8 @@ public class Cliente implements Serializable{
 	
 	public static void main(String[] args) {
 		
-		new Cliente("127.0.0.1",12345);
+		String url = JOptionPane.showInputDialog("IP da maquina servidora");
+		new Cliente(url,12345);
 
 	}
 
