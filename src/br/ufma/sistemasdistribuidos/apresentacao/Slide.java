@@ -18,7 +18,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.awt.TextArea;
 import javax.swing.JComboBox;
@@ -41,6 +44,11 @@ public class Slide extends JFrame {
 	JButton btnNewButton,btnNewButton_1;
 	ArrayList<ImageIcon> listaImagens;
 	int modo;
+	
+	public int getListaImagensSize(){
+		
+		return listaImagens.size();
+	}
 	
 	public int getModo() {
 		return modo;
@@ -86,6 +94,7 @@ public class Slide extends JFrame {
 					mensagem.setTipo(18);
 					enviarParaOuvintes(mensagem);
 				}
+				
 			}
 		});
 		setBounds(100, 100, 643, 649);

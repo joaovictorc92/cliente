@@ -128,7 +128,7 @@ public class Ouvinte extends JFrame {
 		contentPane.add(textArea);
 		
 		lblNewLabel_2 = new JLabel("Usu\u00E1rios na apresenta\u00E7\u00E3o");
-		lblNewLabel_2.setBounds(10, 460, 136, 26);
+		lblNewLabel_2.setBounds(10, 460, 151, 26);
 		contentPane.add(lblNewLabel_2);
 		
 		lblNewLabel_3 = new JLabel("Slide");

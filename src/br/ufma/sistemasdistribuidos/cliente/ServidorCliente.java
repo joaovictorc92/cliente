@@ -107,11 +107,13 @@ public class ServidorCliente implements Runnable {
 				setUsuariosApresentacao();
 				msg.setTipo(17);
 				msg.setMensagemTexto(slide.getLabel());
-				msg.setObject(slide.getImagemCorrente());
+				msg.setObject(slide.getImagemCorrente()); // envia imagem atual do palestrante para outros clientes
 				enviarParaOuvintes(msg);
 				slide.setListaOuvintes(listaClientesApresentacao);
-				if(slide.getModo()==1) // setar modo discussão
+				if(slide.getModo()==1){ // setar modo discussão
 					msg.setTipo(24);
+				    msg.setIdApresentacao(slide.getListaImagensSize());
+				}
 				else
 					msg.setTipo(23);  // setar modo apresentação
 				enviarParaOuvintes(msg);
@@ -120,11 +122,11 @@ public class ServidorCliente implements Runnable {
 				listaUsuariosApresentacao.remove(usuario);
 				msg.setTipo(21);
 				Serializacao.serializa(output, msg);
-				listaClientesApresentacao.remove(output);
+				listaClientesApresentacao.remove(output); // remove fluxo do clinte que desejou se desconectar
 				setUsuariosApresentacao();
 				slide.setListaOuvintes(listaClientesApresentacao);
 			}
-			if(mensagem.getTipo()==25){ // Modo discussão
+			if(mensagem.getTipo()==25){ //Setar o slide no modo discussão
 				int idSlide = mensagem.getIdApresentacao();
 				System.out.println(idSlide);
 				slide.setSlideDiscussao(idSlide);

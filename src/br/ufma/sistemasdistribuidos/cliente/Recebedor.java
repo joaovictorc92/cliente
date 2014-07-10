@@ -1,10 +1,8 @@
 package br.ufma.sistemasdistribuidos.cliente;
 
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -26,7 +24,6 @@ public class Recebedor implements Runnable {
 	ObjectOutputStream output;
 	Login login;
 	Sistema sistema;
-	int idconexao;
 	IUsuario usuario;
 	String texto;
 	ArrayList<Apresentacao> listaApresentacoes;
@@ -51,6 +48,7 @@ public class Recebedor implements Runnable {
 		Mensagem mensagem = new Mensagem();
 		Thread t = null;
 		Slide slide = null;
+		int porta;
 		while (login.isEnabled()) {// Enquanto a janela de login estiver em
 									// execução o cliente escutará o servidor
 			mensagem = Serializacao.deserializa(input);
@@ -58,7 +56,6 @@ public class Recebedor implements Runnable {
 				JOptionPane.showMessageDialog(null, "Usuario logado");
 				System.out.println("usuario recebido");
 				usuario = (IUsuario) mensagem.getObject();
-				this.idconexao = usuario.getIdconexao();
 				login.setVisible(false);
 				sistema.setUsuario(usuario);
 				sistema.setVisible(true);
@@ -97,7 +94,8 @@ public class Recebedor implements Runnable {
 				System.out.println("Numero de imagens:" + listaImagens.size());
 				slide = new Slide(listaImagens, output);
 				slide.setIdApresentacao(mensagem.getIdApresentacao());
-				slide.setVisible(true);
+				slide.setVisible(true); // Mostra a janela de slide
+				System.out.println("Porta Servidor Cliente:"+usuario.getPorta());
 				t = new Thread(new ServidorCliente(slide, usuario.getPorta(),usuario)); // Abre a thread para escutar requisições de novos ouvintes
 				t.start();
 
@@ -115,6 +113,7 @@ public class Recebedor implements Runnable {
 				IUsuario palestrante;
 				palestrante = (IUsuario) mensagem.getObject();
 				try {
+					System.out.println("Ip:"+palestrante.getIp()+"Porta:"+palestrante.getPorta());
 					ClientePonto clientePonto = new ClientePonto(
 							palestrante.getIp(), palestrante.getPorta(),usuario); // Chama a classe para ser ouvinte
 				} catch (Exception e) {

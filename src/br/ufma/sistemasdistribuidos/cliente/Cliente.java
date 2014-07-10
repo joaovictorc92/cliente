@@ -40,6 +40,7 @@ public class Cliente{
 	public static void main(String[] args) {
 		
 		String url = JOptionPane.showInputDialog("IP da maquina servidora");
+		if(url!=null)
 		new Cliente(url,12345);
 
 	}

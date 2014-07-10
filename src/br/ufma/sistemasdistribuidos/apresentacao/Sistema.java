@@ -78,7 +78,6 @@ public class Sistema extends JFrame {
 	}
 
 	public Sistema(final Login login,final ObjectOutputStream output) {
-		this.usuario = usuario;
 		this.login = login;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
